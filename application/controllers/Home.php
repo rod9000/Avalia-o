@@ -5,20 +5,17 @@ class Home extends CI_Controller {
 
 	public function index()
 	{
+		$this->load->model("clientes_model");
+		$courses = $this->clientes_model->show_clientes();
 
-		$this->load->model("courses_model");
-		$courses = $this->courses_model->show_courses();
-
-		$this->load->model("team_model");
-		$team = $this->team_model->show_team();
+		$this->load->model("produtos_model");
+		$team = $this->produtos_model->show_produtos();
 
 		$data = array(
 			"scripts" => array(
 				"owl.carousel.min.js",
 				"theme-scripts.js" 
-			),
-			"courses" => $courses,
-			"team" => $team
+			)
 		);
 		$this->template->show("home.php", $data);
 	}

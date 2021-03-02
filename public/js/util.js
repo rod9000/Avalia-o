@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost/alfahelix/";
+const BASE_URL = "http://localhost/avaliacao/";
 
 const DATATABLE_PTBR = {
     "sEmptyTable": "Nenhum registro encontrado",

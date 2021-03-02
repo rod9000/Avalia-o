@@ -1,51 +1,49 @@
-$(function() {
+$(function () {
 
 	// EXIBIR MODAIS
-	$("#btn_add_course").click(function(){
+	$("#btn_add_clientes").click(function () //Js para abrir o modal de cadastros dos Clientes
+	{ 
 		clearErrors();
-		$("#form_course")[0].reset();
-		$("#course_img_path").attr("src", "");
-		$("#modal_course").modal();
+		$("#form_clientes")[0].reset();
+		$("#modal_clientes").modal();
 	});
-
-	$("#btn_add_member").click(function(){
+	$("#btn_add_produtos").click(function () //Js para abrir o modal de cadastros dos Produtos
+	{
 		clearErrors();
-		$("#form_member")[0].reset();
-		$("#member_photo_path").attr("src", "");
-		$("#modal_member").modal();
+		$("#form_produtos")[0].reset();
+		$("#modal_produtos").modal();
 	});
-
-	$("#btn_add_user").click(function(){
+	$("#btn_add_pedidos").click(function () //Js para abrir o modal de cadastros dos pedidos
+	{
+		clearErrors();
+		$("#form_pedidos")[0].reset();
+		$("#modal_pedidos").modal();
+	});
+	$("#btn_add_user").click(function () //Js para abrir o modal de cadastros dos Usuáros
+	{
 		clearErrors();
 		$("#form_user")[0].reset();
 		$("#modal_user").modal();
 	});
-
-	$("#btn_upload_course_img").change(function() {
-		uploadImg($(this), $("#course_img_path"), $("#course_img"));
-	});
-
-	$("#btn_upload_member_photo").change(function() {
-		uploadImg($(this), $("#member_photo_path"), $("#member_photo"));
-	});
-
-	$("#form_course").submit(function() {
+	
+	$("#form_clientes").submit(function () //Js para salvar os dados do form do clientes
+	{
 
 		$.ajax({
 			type: "POST",
-			url: BASE_URL + "restrict/ajax_save_course",
+			url: BASE_URL + "restrict/ajax_save_clientes",
 			dataType: "json",
 			data: $(this).serialize(),
-			beforeSend: function() {
+			beforeSend: function () {
 				clearErrors();
-				$("#btn_save_course").siblings(".help-block").html(loadingImg("Verificando..."));
+				$("#btn_save_clientes").siblings(".help-block").html(loadingImg("Verificando..."));
 			},
-			success: function(response) {
+			success: function (response) {
 				clearErrors();
 				if (response["status"]) {
-					$("#modal_course").modal("hide");
-					swal("Sucesso!","Curso salvo com sucesso!", "success");
-					dt_course.ajax.reload();
+					$("#modal_clientes").modal("hide");
+					swal("Sucesso!", "Cliente salvo com sucesso!", "success");
+					dt_clientes.ajax.reload();
 				} else {
 					showErrorsModal(response["error_list"])
 				}
@@ -54,24 +52,24 @@ $(function() {
 
 		return false;
 	});
-
-	$("#form_member").submit(function() {
+	$("#form_produtos").submit(function () //Js para salvar os dados do form do produtos
+	{
 
 		$.ajax({
 			type: "POST",
-			url: BASE_URL + "restrict/ajax_save_member",
+			url: BASE_URL + "restrict/ajax_save_produtos",
 			dataType: "json",
 			data: $(this).serialize(),
-			beforeSend: function() {
+			beforeSend: function () {
 				clearErrors();
-				$("#btn_save_member").siblings(".help-block").html(loadingImg("Verificando..."));
+				$("#btn_save_produtos").siblings(".help-block").html(loadingImg("Verificando..."));
 			},
-			success: function(response) {
+			success: function (response) {
 				clearErrors();
 				if (response["status"]) {
-					$("#modal_member").modal("hide");
-					swal("Sucesso!","Membro salvo com sucesso!", "success");
-					dt_member.ajax.reload();
+					$("#modal_produtos").modal("hide");
+					swal("Sucesso!", "Produto salvo com sucesso!", "success");
+					dt_produtos.ajax.reload();
 				} else {
 					showErrorsModal(response["error_list"])
 				}
@@ -80,23 +78,49 @@ $(function() {
 
 		return false;
 	});
+	$("#form_pedidos").submit(function () //Js para salvar os dados do form do pedidos
+	{
 
-	$("#form_user").submit(function() {
+		$.ajax({
+			type: "POST",
+			url: BASE_URL + "restrict/ajax_save_pedidos",
+			dataType: "json",
+			data: $(this).serialize(),
+			beforeSend: function () {
+				clearErrors();
+				$("#btn_save_pedidos").siblings(".help-block").html(loadingImg("Verificando..."));
+			},
+			success: function (response) {
+				clearErrors();
+				if (response["status"]) {
+					$("#modal_pedidos").modal("hide");
+					swal("Sucesso!", "Produto salvo com sucesso!", "success");
+					dt_pedidos.ajax.reload();
+				} else {
+					showErrorsModal(response["error_list"])
+				}
+			}
+		})
+
+		return false;
+	});
+	$("#form_user").submit(function () //Js para salvar os dados do form do usuário
+	{
 
 		$.ajax({
 			type: "POST",
 			url: BASE_URL + "restrict/ajax_save_user",
 			dataType: "json",
 			data: $(this).serialize(),
-			beforeSend: function() {
+			beforeSend: function () {
 				clearErrors();
 				$("#btn_save_user").siblings(".help-block").html(loadingImg("Verificando..."));
 			},
-			success: function(response) {
+			success: function (response) {
 				clearErrors();
 				if (response["status"]) {
 					$("#modal_user").modal("hide");
-					swal("Sucesso!","Usuário salvo com sucesso!", "success");
+					swal("Sucesso!", "Usuário salvo com sucesso!", "success");
 					dt_user.ajax.reload();
 				} else {
 					showErrorsModal(response["error_list"])
@@ -106,8 +130,8 @@ $(function() {
 
 		return false;
 	});
-
-	$("#btn_your_user").click(function() {
+	$("#btn_your_user").click(function() //Js para obter dados dos usuarios e colocar no form do usuário logado
+	{
 
 		$.ajax({
 			type: "POST",
@@ -126,33 +150,48 @@ $(function() {
 
 		return false;
 	});
-
-	function active_btn_course() {
+	var dt_clientes = $("#dt_clientes").DataTable({ //Js de organização do data table dos clientes
+		"oLanguage": DATATABLE_PTBR,
+		"autoWidth": false,
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+			"url": BASE_URL + "restrict/ajax_list_clientes",
+			"type": "POST",
+		},
+		"columnDefs": [
+			{ targets: "no-sort", orderable: false },
+			{ targets: "dt-center", className: "dt-center" },
+		],
+		"drawCallback": function() {
+			active_btn_clientes();
+		}
+	});
+	function active_btn_clientes() { //Js do botão edita e exlui da data table
 		
-		$(".btn-edit-course").click(function(){
+		$(".btn-edit-clt").click(function(){
 			$.ajax({
 				type: "POST",
-				url: BASE_URL + "restrict/ajax_get_course_data",
+				url: BASE_URL + "restrict/ajax_get_clientes_data",
 				dataType: "json",
-				data: {"course_id": $(this).attr("course_id")},
+				data: {"clientes_id": $(this).attr("clientes_id")},
 				success: function(response) {
 					clearErrors();
-					$("#form_course")[0].reset();
+					$("#form_clientes")[0].reset();
 					$.each(response["input"], function(id, value) {
 						$("#"+id).val(value);
 					});
-					$("#course_img_path").attr("src", response["img"]["course_img_path"]);
-					$("#modal_course").modal();
+					$("#modal_clientes").modal();
 				}
 			})
 		});
 
-		$(".btn-del-course").click(function(){
+		$(".btn-del-clt").click(function(){
 			
-			course_id = $(this);
+			clientes_id	 = $(this);
 			swal({
 				title: "Atenção!",
-				text: "Deseja deletar esse curso?",
+				text: "Deseja deletar esse usuário?",
 				type: "warning",
 				showCancelButton: true,
 				confirmButtonColor: "#d9534f",
@@ -164,12 +203,12 @@ $(function() {
 				if (result.value) {
 					$.ajax({
 						type: "POST",
-						url: BASE_URL + "restrict/ajax_delete_course_data",
+						url: BASE_URL + "restrict/ajax_delete_clientes_data",
 						dataType: "json",
-						data: {"course_id": course_id.attr("course_id")},
+						data: {"clientes_id": clientes_id.attr("clientes_id")},
 						success: function(response) {
 							swal("Sucesso!", "Ação executada com sucesso", "success");
-							dt_course.ajax.reload();
+							dt_clientes.ajax.reload();
 						}
 					})
 				}
@@ -177,14 +216,14 @@ $(function() {
 
 		});
 	}
-
-	var dt_course = $("#dt_courses").DataTable({
+	
+	var dt_produtos = $("#dt_produtos").DataTable({ //Js de organização do data table dos produtos
 		"oLanguage": DATATABLE_PTBR,
 		"autoWidth": false,
 		"processing": true,
 		"serverSide": true,
 		"ajax": {
-			"url": BASE_URL + "restrict/ajax_list_course",
+			"url": BASE_URL + "restrict/ajax_list_produtos",
 			"type": "POST",
 		},
 		"columnDefs": [
@@ -192,36 +231,34 @@ $(function() {
 			{ targets: "dt-center", className: "dt-center" },
 		],
 		"drawCallback": function() {
-			active_btn_course();
+			active_btn_prod();
 		}
 	});
-
-	function active_btn_member() {
+	function active_btn_prod() { //Js do botão edita e exlui da data table
 		
-		$(".btn-edit-member").click(function(){
+		$(".btn-edit-prod").click(function(){
 			$.ajax({
 				type: "POST",
-				url: BASE_URL + "restrict/ajax_get_member_data",
+				url: BASE_URL + "restrict/ajax_get_produtos_data",
 				dataType: "json",
-				data: {"member_id": $(this).attr("member_id")},
+				data: {"produtos_id": $(this).attr("produtos_id")},
 				success: function(response) {
 					clearErrors();
-					$("#form_member")[0].reset();
+					$("#form_produtos")[0].reset();
 					$.each(response["input"], function(id, value) {
 						$("#"+id).val(value);
 					});
-					$("#member_photo_path").attr("src", response["img"]["member_photo_path"]);
-					$("#modal_member").modal();
+					$("#modal_produtos").modal();
 				}
 			})
 		});
 
-		$(".btn-del-member").click(function(){
+		$(".btn-del-prod").click(function(){
 			
-			member_id = $(this);
+			produtos_id = $(this);
 			swal({
 				title: "Atenção!",
-				text: "Deseja deletar esse membro?",
+				text: "Deseja deletar esse Produto?",
 				type: "warning",
 				showCancelButton: true,
 				confirmButtonColor: "#d9534f",
@@ -233,12 +270,79 @@ $(function() {
 				if (result.value) {
 					$.ajax({
 						type: "POST",
-						url: BASE_URL + "restrict/ajax_delete_member_data",
+						url: BASE_URL + "restrict/ajax_delete_produtos_data",
 						dataType: "json",
-						data: {"member_id": member_id.attr("member_id")},
+						data: {"produtos_id": produtos_id.attr("produtos_id")},
 						success: function(response) {
 							swal("Sucesso!", "Ação executada com sucesso", "success");
-							dt_member.ajax.reload();
+							dt_produtos.ajax.reload();
+						}
+					})
+				}
+			})
+	
+		});
+	}
+
+	var dt_pedidos = $("#dt_pedidos").DataTable({ //Js de organização do data table dos pedidos
+		"oLanguage": DATATABLE_PTBR,
+		"autoWidth": false,
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+			"url": BASE_URL + "restrict/ajax_list_pedidos",
+			"type": "POST",
+		},
+		"columnDefs": [
+			{ targets: "no-sort", orderable: false },
+			{ targets: "dt-center", className: "dt-center" },
+		],
+		"drawCallback": function() {
+			active_btn_pedidos();
+		}
+	});
+	function active_btn_pedidos() { //Js do botão edita e exlui da data table
+		
+		$(".btn-edit-pdd").click(function(){
+			$.ajax({
+				type: "POST",
+				url: BASE_URL + "restrict/ajax_get_pedidos_data",
+				dataType: "json",
+				data: {"pedidos_id": $(this).attr("pedidos_id")},
+				success: function(response) {
+					clearErrors();
+					$("#form_pedidos")[0].reset();
+					$.each(response["input"], function(id, value) {
+						$("#"+id).val(value);
+					});
+					$("#modal_pedidos").modal();
+				}
+			})
+		});
+
+		$(".btn-del-pdd").click(function(){
+			
+			pedidos_id = $(this);
+			swal({
+				title: "Atenção!",
+				text: "Deseja deletar esse usuário?",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#d9534f",
+				confirmButtonText: "Sim",
+				cancelButtontext: "Não",
+				closeOnConfirm: true,
+				closeOnCancel: true,
+			}).then((result) => {
+				if (result.value) {
+					$.ajax({
+						type: "POST",
+						url: BASE_URL + "restrict/ajax_delete_pedidos_data",
+						dataType: "json",
+						data: {"pedidos_id": pedidos_id.attr("pedidos_id")},
+						success: function(response) {
+							swal("Sucesso!", "Ação executada com sucesso", "success");
+							dt_pedidos.ajax.reload();
 						}
 					})
 				}
@@ -247,13 +351,13 @@ $(function() {
 		});
 	}
 
-	var dt_member = $("#dt_team").DataTable({
+	var dt_user = $("#dt_users").DataTable({ //Js de organização do data table dos usuários
 		"oLanguage": DATATABLE_PTBR,
 		"autoWidth": false,
 		"processing": true,
 		"serverSide": true,
 		"ajax": {
-			"url": BASE_URL + "restrict/ajax_list_member",
+			"url": BASE_URL + "restrict/ajax_list_user",
 			"type": "POST",
 		},
 		"columnDefs": [
@@ -261,11 +365,10 @@ $(function() {
 			{ targets: "dt-center", className: "dt-center" },
 		],
 		"drawCallback": function() {
-			active_btn_member();
+			active_btn_user();
 		}
 	});
-
-	function active_btn_user() {
+	function active_btn_user() { //Js do botão edita e exlui da data table
 		
 		$(".btn-edit-user").click(function(){
 			$.ajax({
@@ -314,25 +417,6 @@ $(function() {
 
 		});
 	}
-
-	var dt_user = $("#dt_users").DataTable({
-		"oLanguage": DATATABLE_PTBR,
-		"autoWidth": false,
-		"processing": true,
-		"serverSide": true,
-		"ajax": {
-			"url": BASE_URL + "restrict/ajax_list_user",
-			"type": "POST",
-		},
-		"columnDefs": [
-			{ targets: "no-sort", orderable: false },
-			{ targets: "dt-center", className: "dt-center" },
-		],
-		"drawCallback": function() {
-			active_btn_user();
-		}
-	});
-
 
 
 })
